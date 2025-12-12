@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Original Poetry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.8s ease;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(8px);
+            z-index: -2;
+            transition: background-image 0.8s ease;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        body.theme-poem1::before {
+            background-image: url('https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1600');
+        }
+
+        body.theme-poem2::before {
+            background-image: url('https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1600');
+        }
+
+        body.theme-nature::before {
+            background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600');
+        }
+
+        body.theme-night::before {
+            background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1600');
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .header {
+            background: rgba(40, 40, 40, 0.95);
+            color: #f5f5f5;
+            padding: 25px 30px;
+            border-bottom: 3px solid #8b7355;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            font-weight: normal;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            font-size: 0.9em;
+            color: #c4b5a0;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: #c4b5a0;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #8b7355;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+            min-height: 600px;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .poem-image {
+            width: 100%;
+            height: 350px;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid #8b7355;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .poem-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%);
+        }
+
+        .navbar {
+            background: rgba(245, 242, 238, 0.9);
+            padding: 20px;
+            border: 1px solid #d0c4b0;
+        }
+
+        .navbar h3 {
+            margin-bottom: 15px;
+            color: #3a3a3a;
+            font-size: 1.1em;
+            font-weight: normal;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #8b7355;
+            padding-bottom: 10px;
+        }
+
+        .poem-list {
+            list-style: none;
+        }
+
+        .poem-list li {
+            margin: 8px 0;
+        }
+
+        .poem-list a {
+            display: block;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #3a3a3a;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-size: 0.95em;
+        }
+
+        .poem-list a:hover {
+            background: rgba(139, 115, 85, 0.1);
+            border-left-color: #8b7355;
+            padding-left: 18px;
+        }
+
+        .poem-list a .theme-suffix {
+            display: none;
+        }
+
+        .poem-list a:hover .theme-suffix {
+            display: inline;
+        }
+
+        .poem-list a.active {
+            background: rgba(139, 115, 85, 0.15);
+            border-left-color: #8b7355;
+            font-weight: bold;
+        }
+
+        .right-column {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 700px;
+        }
+
+        .poem-title {
+            font-size: 2em;
+            color: #2a2a2a;
+            margin-bottom: 5px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        .poem-author {
+            font-style: italic;
+            color: #6a6a6a;
+            margin-bottom: 30px;
+            font-size: 1em;
+            border-bottom: 1px solid #d0d0d0;
+            padding-bottom: 15px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .poem-author .additional-info {
+            display: none;
+        }
+
+        .poem-author:hover .additional-info {
+            display: inline;
+        }
+
+        .poem-content {
+            line-height: 1.9;
+            color: #2a2a2a;
+            font-size: 1.05em;
+        }
+
+        .poem-content p {
+            margin-bottom: 20px;
+        }
+
+        .theme-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #8b7355;
+            color: white;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        /* Theme-specific styles */
+        /* To add a new poem theme, copy this block and change the theme name and color values */
+        
+        /* THEME: poem1 */
+        body.theme-poem1 .header { border-bottom-color: #c41e3a; }
+        body.theme-poem1 .theme-tag { background: #c41e3a; }
+        body.theme-poem1 .poem-image { border-color: #c41e3a; }
+
+        /* THEME: poem2 */
+        body.theme-poem2 .header { border-bottom-color: #d4af37; }
+        body.theme-poem2 .theme-tag { background: #d4af37; }
+        body.theme-poem2 .poem-image { border-color: #d4af37; }
+
+        /* THEME: nature */
+        body.theme-nature .header { border-bottom-color: #556b2f; }
+        body.theme-nature .theme-tag { background: #556b2f; }
+        body.theme-nature .poem-image { border-color: #556b2f; }
+
+        /* THEME: night */
+        body.theme-night .header { border-bottom-color: #191970; }
+        body.theme-night .theme-tag { background: #191970; }
+        body.theme-night .poem-image { border-color: #191970; }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .poem-image {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body class="theme-poem1">
+    <div class="container">
+        <div class="header">
+            <h1>Original Poetry</h1>
+            <p>Work written by me in 2025 for a high school poetry class.</p>
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+
+        <div class="content">
+            <div class="left-column">
+                <div class="poem-image" id="poemImage" style="background-image: url('https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=800');">
+                </div>
+
+                <div class="navbar">
+                    <h3>Poems</h3>
+                    <ul class="poem-list">
+                        <li><a href="#" class="active" data-poem="poem1">Divided Lines<span class="theme-suffix"> - Political</span></a></li>
+                        <li><a href="#" data-poem="poem2">Ode to Athena<span class="theme-suffix"> - Divine</span></a></li>
+                        <li><a href="#" data-poem="forest">The Road Not Taken<span class="theme-suffix"> - Nature & Choice</span></a></li>
+                        <li><a href="#" data-poem="stars">When Stars Align<span class="theme-suffix"> - Night & Wonder</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div id="poemDisplay">
+                    <span class="theme-tag">Political</span>
+                    <h2 class="poem-title">Divided Lines</h2>
+                    <p class="poem-author">Written December 2024<span class="additional-info"> - Inspired by contemporary political discourse</span></p>
+                    <div class="poem-content">
+                        <p>We stand on opposite shores<br>
+                        of a river that once was narrow,<br>
+                        now widened by the erosion<br>
+                        of patience and understanding.</p>
+
+                        <p>Your truth and mine—<br>
+                        they used to overlap,<br>
+                        like colors bleeding into one another,<br>
+                        creating something new.</p>
+
+                        <p>Now we shout across the water,<br>
+                        our words lost in the current,<br>
+                        each convinced the other<br>
+                        has forgotten how to listen.</p>
+
+                        <p>But what if we both waded in?<br>
+                        Met in the middle, knee-deep<br>
+                        in the uncomfortable truth<br>
+                        that neither shore holds all the answers?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // POEM CONFIGURATION
+        // To add a new poem, add an entry here AND add its theme styles in the CSS above
+        // ============================================
+        
+        const poems = {
+            poem1: {
+                title: "Divided Lines",
+                author: "Written December 2024",
+                additionalInfo: " - Inspired by contemporary political discourse",
+                theme: "Political",
+                themeClass: "theme-poem1",  // Must match CSS theme name
+                backgroundImage: "url('https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1600')",
+                poemImage: "url('https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=800')",
+                content: `<p>We stand on opposite shores<br>
+                        of a river that once was narrow,<br>
+                        now widened by the erosion<br>
+                        of patience and understanding.</p>
+
+                        <p>Your truth and mine—<br>
+                        they used to overlap,<br>
+                        like colors bleeding into one another,<br>
+                        creating something new.</p>
+
+                        <p>Now we shout across the water,<br>
+                        our words lost in the current,<br>
+                        each convinced the other<br>
+                        has forgotten how to listen.</p>
+
+                        <p>But what if we both waded in?<br>
+                        Met in the middle, knee-deep<br>
+                        in the uncomfortable truth<br>
+                        that neither shore holds all the answers?</p>`
+            },
+            
+            poem2: {
+                title: "Ode to poem2",
+                author: "Written November 2024",
+                additionalInfo: " - Written after visiting the Parthenon Museum",
+                theme: "Divine",
+                themeClass: "theme-poem2",
+                backgroundImage: "url('https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1600')",
+                poemImage: "url('https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800')",
+                content: `<p>Gray-eyed goddess, born of thought,<br>
+                        sprung fully formed from Zeus's brow,<br>
+                        you who hold the aegis high<br>
+                        and guide the righteous through the fray.</p>
+
+                        <p>Wisdom's daughter, war's bright sister,<br>
+                        you who weave the fates of men,<br>
+                        owl perched upon your shoulder,<br>
+                        olive branch within your hand.</p>
+
+                        <p>In marble halls we sang your praise,<br>
+                        in battle's heat invoked your name,<br>
+                        protector of the city-state,<br>
+                        defender of the sacred flame.</p>
+
+                        <p>Though temples crumble into dust,<br>
+                        and altars lie in silence deep,<br>
+                        your wisdom echoes through the ages—<br>
+                        eternal watch you still do keep.</p>`
+            },
+            
+            forest: {
+                title: "The Road Not Taken",
+                author: "Published 1916",
+                additionalInfo: " - Originally in 'Mountain Interval' collection",
+                theme: "Nature & Choice",
+                themeClass: "theme-nature",
+                backgroundImage: "url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600')",
+                poemImage: "url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800')",
+                content: `<p>Two roads diverged in a yellow wood,<br>
+                        And sorry I could not travel both<br>
+                        And be one traveler, long I stood<br>
+                        And looked down one as far as I could<br>
+                        To where it bent in the undergrowth;</p>
+
+                        <p>Then took the other, as just as fair,<br>
+                        And having perhaps the better claim,<br>
+                        Because it was grassy and wanted wear;<br>
+                        Though as for that the passing there<br>
+                        Had worn them really about the same,</p>
+
+                        <p>And both that morning equally lay<br>
+                        In leaves no step had trodden black.<br>
+                        Oh, I kept the first for another day!<br>
+                        Yet knowing how way leads on to way,<br>
+                        I doubted if I should ever come back.</p>
+
+                        <p>I shall be telling this with a sigh<br>
+                        Somewhere ages and ages hence:<br>
+                        Two roads diverged in a wood, and I—<br>
+                        I took the one less traveled by,<br>
+                        And that has made all the difference.</p>`
+            },
+            
+            stars: {
+                title: "When Stars Align",
+                author: "Written October 2024",
+                additionalInfo: " - Composed during a camping trip in the mountains",
+                theme: "Night & Wonder",
+                themeClass: "theme-night",
+                backgroundImage: "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1600')",
+                poemImage: "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800')",
+                content: `<p>Under velvet skies so deep and wide,<br>
+                        where ancient light has traveled far,<br>
+                        I stand in awe, made small by time,<br>
+                        beneath the quiet burning star.</p>
+
+                        <p>Each pinprick glow, a distant sun,<br>
+                        with worlds that spin in silent dance,<br>
+                        and I but dust upon a rock<br>
+                        caught in infinity's expanse.</p>
+
+                        <p>Yet in this vastness, cold and dark,<br>
+                        I feel connected to it all—<br>
+                        the carbon in my bones was forged<br>
+                        in furnaces before the fall.</p>
+
+                        <p>So when the stars align at night,<br>
+                        and darkness wraps the world in sleep,<br>
+                        I'm reminded that I'm part of this—<br>
+                        this cosmic dance, both wide and deep.</p>`
+            }
+        };
+
+        const links = document.querySelectorAll('.poem-list a');
+        const poemDisplay = document.getElementById('poemDisplay');
+        const poemImage = document.getElementById('poemImage');
+        const body = document.body;
+
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                links.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                const poemKey = link.getAttribute('data-poem');
+                const poem = poems[poemKey];
+                
+                // Change body theme
+                body.className = poem.themeClass;
+                
+                // Update poem image
+                poemImage.style.backgroundImage = poem.poemImage;
+                
+                // Update poem content
+                poemDisplay.innerHTML = `
+                    <span class="theme-tag">${poem.theme}</span>
+                    <h2 class="poem-title">${poem.title}</h2>
+                    <p class="poem-author">${poem.author}<span class="additional-info">${poem.additionalInfo}</span></p>
+                    <div class="poem-content">
+                        ${poem.content}
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
